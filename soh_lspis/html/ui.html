@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <!-- NUI Controls & Handlers Script Loading -->
+        <script src="js/nui_controls.js" type="text/javascript"></script>
+
+        <div class = 'main-gui'>
+            <div class = 'container'>
+                <!-- Nav Menu HTML -->
+                <div class = 'row'>
+                    <div class = 'col-md-4'>
+                        <div id = 'nav-menu' class = 'sidenav text-center'>
+                            <a href = 'javascript:void(0)' class = 'closebtn' onclick = 'hideNav("welcome")'>&times;</a>
+                            
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'bolo-btn'>BOLO's</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'warrants-btn'>Warrants</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'name-search-btn'>Name Search</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'plate-search-btn'>Plate Search</button>
+                            <div class = 'spacer' id='topSpacer'></div>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'file-bolo-btn'>File BOLO</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'file-warrant-btn'>File Warrant</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'file-record-btn'>File Record</button>
+                            <div class = 'spacer' id='bottomSpacer'></div>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'edit-bolo-btn'>Edit BOLO</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'edit-warrant-btn'>Edit Warrant</button>
+                            <button class = 'btn-sm btn-outline-warning mt-3 custom' id = 'edit-record-btn'>Edit Record</button>
+
+                            <div class = 'spacer'></div>
+                            <button class = 'btn-sm btn-danger custom' id = 'exit_gui'>Exit LSPIS</button>
+
+                        </div>
+                        
+                        <div class = 'mt-5 pl-5' style = 'font-size:30px;cursor:pointer;' onclick = 'showNav()'>&#9776;</div>
+                    </div> <!-- col-md-4 div -->
+                </div> <!-- row div -->
+
+                <!-- Main Screen HTML -->
+                <div class = 'row'>
+                    <div class = 'col-md-4'>
+
+                        <!-- Main Menu -->
+                        <div class = 'right-color' id='welcome-gui'>
+                            <center><h3>Welcome to LSPIS</h3></center>
+                            &nbsp;
+                            <center>Los Santos Police Information System</center>
+                            <br/>
+                            <br/>
+                            &nbsp;This system accesses the State Database.
+                            <br/>
+                            <br/>
+                            <div id='userType'></div>
+                        </div>
+
+                        <!-- BOLOS -->
+                        <div class = 'right-color' id='bolo-gui'>
+                            <table class = 'table table-md table-hover table-striped text-white'>
+                                <thead class = 'thead-dark'>
+                                    <tr>
+                                        <th style="width:120px;">#</th>
+                                        <th style="width:500px;text-align:center;">Report Information</th>
+                                        <th style="width:220px;text-align:right;">Last Access</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id = 'bolo-info' class = 'tbody'>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Warrants -->
+                        <div class = 'right-color' id='warrants-gui'>
+                            <table class = 'table table-md table-hover table-striped text-white'>
+                                <thead class = 'thead-dark'>
+                                    <tr>
+                                        <th style="width:90px;">#</th>
+                                        <th style="width:120px;">Name</th>
+                                        <th style="width:400px;text-align:center;">Details</th>
+                                        <th style="width:115px;text-align:right;">Status</th>
+                                        <th style="width:115px;text-align:right;">Last Access</th>
+                                    </tr>
+                                </thead>
+    
+                                <tbody id = 'warrants-info' class = 'tbody'>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Name Search -->
+                        <div class = 'right-color' id='name-search-gui'>
+                            <center><h3>Criminal Record Search</h3></center>
+                            &nbsp;
+                            <center>Entering full names will yield better results, capitalization is also required.</center>
+                            <br/>
+                            <br/>
+
+                            <form name='name-search-form'>
+                                First Name: &nbsp;<input type='text' name='firstName' value=''/>
+                                <br/>
+                                <br/>
+                                Last Name: &nbsp;<input type='text' name='lastName' value=''/>
+                                <br/>
+                                <br/>
+                                <input type="submit" onclick='event.preventDefault(); nameSearch(firstName.value, lastName.value)' value='Search'/>
+                            </form>
+                            <br/>
+                            <div id='name-search-notification'></div>
+                        </div>
+
+                        <div class='right-color' id='name-search-results-gui'>
+                            <center><h3>Criminal Record Search</h3></center>
+                             &nbsp;
+                            <center><b><h5>Search Results</h5></b></center>
+                            <br/>
+                            <br/>
+                            <div class='left' id='name-search-results-box-left'></div>
+                            <div class='right' id='name-search-results-box-right'></div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <center><div class='center' id='name-search-results-box-center'></div></center>
+
+                        </div>
+
+                        <!-- Plate Search -->
+                        <div class = 'right-color' id='plate-search-gui'>
+                            <center><h3>Vehicle Plate Lookup</h3></center>
+                            &nbsp;
+                            <center>Try to be as accurate as possible</center>
+                            <br/>
+                            <br/>
+
+                            <form name='plate-search-form'>
+                                Plate Number: &nbsp;<input type='text' name='plateNumber' value=''/>
+                                <br/>
+                                <br/>
+                                <input type='submit' onclick='event.preventDefault(); plateSearch(plateNumber.value)' value='Search'/>
+                            </form>
+                            <br/>
+                            <div id='plate-search-notification'>
+                                <!-- Plate Search Notification Bar -->
+                            </div>
+                            <br/>
+                            <br/>
+                            <div id='plate-search-nearest'>
+                                <!-- Nearest Plates List -->
+                            </div>
+                            <div id='plate-search-results'>
+                                <!-- Registration Information -->
+                            </div>
+                        </div>
+
+                        <!-- File Bolo -->
+                        <div class = 'right-color' id='file-bolo-gui'>
+                            <center><h3>File New Bolo</h3></center>
+                            &nbsp;
+                            <center>Include as many details as you possibly can, everything is helpful.</center>
+                            </br>
+                            <div id='file-bolo-notification'></div>
+
+                            <form name='file-bolo-form'>
+                                &nbsp;BOLO ID: &nbsp;<input type='text' name='fileBoloID' value ='BL-'/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                &nbsp;BOLO Details
+                                <br/>
+                                &nbsp;<textarea form='file-bolo-form' id='fileBoloDetails' cols='101' rows='18' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                &nbsp;<input type='submit' onclick='event.preventDefault(); fileBolo(fileBoloID.value, fileBoloDetails.value)' value='Submit Bolo'/>
+                            </form>
+                        </div>
+
+                        <!-- File Warrant -->
+                        <div class = 'right-color' id='file-warrant-gui'>
+                            <center><h3>File New Warrant</h3></center>
+                            &nbsp;
+                            <center>Include all of the warrant information, your name will automatically be attached.</center>
+                            </br>
+                            <div id='file-warrant-notification'></div>
+    
+                            <form name='file-warrant-form'>
+                                &nbsp;Warrant ID: &nbsp;<input type='text' name='fileWarrantID' value ='W-'/>
+                                <br/>
+                                <br/>
+                                &nbsp;Name: &nbsp;<input type='text' name='fileWarrantName' value =''/>
+                                <br/>
+                                <br/>
+                                &nbsp;Warrant Details
+                                <br/>
+                                &nbsp;<textarea form='file-warrant-form' id='fileWarrantDetails' cols='101' rows='15' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                &nbsp;<input type='submit' onclick='event.preventDefault(); fileWarrant(fileWarrantID.value, fileWarrantName.value, fileWarrantDetails.value)' value='Submit Warrant'/>
+                            </form>
+                        </div>
+
+                        <!-- File Record -->
+                        <div class = 'right-color' id='file-record-gui'>
+                            <center><h3>File A Criminal Record</h3></center>
+                            &nbsp;
+                            <center>Be sure to include every detail possible, you can edit it later if need be.</center>
+                            </br>
+        
+                            <form name='file-record-form' style='max-height: 655px; overflow-y: auto;'>
+                                &nbsp;Record ID: &nbsp;<input type='text' name='fileRecordID' value ='R-'/>
+                                <br/>
+                                <br/>
+                                &nbsp;First Name:&nbsp;<input type='text' name='fileRecord_FirstName' value =''/>  &nbsp; Last Name:&nbsp;<input type='text' name='fileRecord_LastName' value =''/> &nbsp; DOB:&nbsp;<input type='date' name='fileRecord_DOB' value =''/>
+                                <br/>
+                                <br/>
+                                &nbsp;Height:&nbsp;<input type='text' name='fileRecord_Height' value =''/>
+
+                                &nbsp; Sex:&nbsp;
+                                <select name='fileRecord_Sex'>
+                                    <option>M</option>
+                                    <option>F</option>
+                                    <option>Other</option>
+                                </select>
+                                &nbsp; Phone Number:&nbsp;<input type='tel' name='fileRecord_PhoneNumber'pattern='[0-9]{3}-[0-9]{4}' required/> Format: ###-####
+                                <br/>
+                                <br/>
+                                &nbsp;Address:&nbsp;<input type='text' name='fileRecord_Address' value =''/>
+                                <br/>
+                                <br/>
+                                &nbsp;Drivers License Status:&nbsp;
+                                <select name='fileRecord_dlStatus'>
+                                    <option>Valid</option>
+                                    <option>Suspended</option>
+                                    <option>Revoked</option>
+                                </select>
+                                &nbsp;
+                                &nbsp;Weapons License Status:&nbsp;
+                                <select name='fileRecord_wlStatus'>
+                                    <option>Valid</option>
+                                    <option>Suspended</option>
+                                    <option>Revoked</option>
+                                </select>
+                                <br/>
+                                <br/>
+                                &nbsp;Parole Status:&nbsp;<input type='text' name='fileRecord_paroleStatus' value=''/>
+                                <br/>
+                                <br/>
+                                &nbsp;Charges
+                                &nbsp;<textarea form='file-warrant-form' id='fileRecord_charges' cols='99' rows='5' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                &nbsp;Citations
+                                &nbsp;<textarea form='file-warrant-form' id='fileRecord_citations' cols='99' rows='5' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                &nbsp;Arrests
+                                &nbsp;<textarea form='file-warrant-form' id='fileRecord_arrests' cols='99' rows='5' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                &nbsp;Police Notes
+                                &nbsp;<textarea form='file-warrant-form' id='fileRecord_notes' cols='99' rows='5' style='resize:none;'></textarea>
+                                <br/>
+                                <br/>
+                                <div id='file-record-notification'></div>
+                                <br/>
+                                &nbsp;<input type='submit' onclick='event.preventDefault(); fileRecord(fileRecordID.value, fileRecord_FirstName.value, fileRecord_LastName.value, fileRecord_DOB.value, fileRecord_Height.value, fileRecord_Sex.value, fileRecord_PhoneNumber.value, fileRecord_Address.value, fileRecord_dlStatus.value, fileRecord_wlStatus.value, fileRecord_paroleStatus.value, fileRecord_charges.value, fileRecord_citations.value, fileRecord_arrests.value, fileRecord_notes.value)' value='Submit Record'/>
+                                <br/>
+                            </form>
+                        </div>
+
+                        <!-- Edit Bolo -->
+                        <div class = 'right-color' id='edit-bolo-gui'>
+                            <center><h3>Edit BOLO</h3></center>
+                            &nbsp;
+                            <center>123456</center>
+                            </br>
+                            <div id='edit-bolo-notification'></div>
+
+                            <form name='edit-bolo-form-search'>
+                                &nbsp;BOLO ID: &nbsp;<input type='text' name='editBoloID' value='BL-'/>
+                                <br/>
+                                <input type='submit' onclick='event.preventDefault(); editBolo(editBoloID.value)' value='Search for BOLO'/>
+                            </form>
+
+                            <br/>
+                            <form name='edit-bolo-form-results'></form>
+                        </div>
+
+                        <!-- Edit Warrant -->
+                        <div class = 'right-color' id='edit-warrant-gui'>
+                            <center><h3>Edit Warrant</h3></center>
+                            &nbsp;
+                            <center>123456</center>
+                            </br>
+                            <div id='edit-warrant-notification'></div>
+
+                            <form name='edit-warrant-form-search'>
+                                    &nbsp;Warrant ID: &nbsp;<input type='text' name='editWarrantID' value='W-'/>
+                                    <br/>
+                                    <input type='submit' onclick='event.preventDefault(); editWarrant(editWarrantID.value)' value='Search for Warrant'/>
+                                </form>
+                        </div>
+
+                        <!-- Edit Record -->
+                        <div class = 'right-color' id='edit-record-gui'>
+                            <center><h3>Edit Record</h3></center>
+                            &nbsp;
+                            <center>123456</center>
+                            </br>
+                            <div id='edit-record-notification'></div>
+
+                            <form name='edit-record-form-search'>
+                                    &nbsp;Record ID: &nbsp;<input type='text' name='editRecordID' value='R-'/>
+                                    <br/>
+                                    <input type='submit' onclick='event.preventDefault(); editRecord(editRecordID.value)' value='Search for Record'/>
+                                </form>
+                        </div>
+
+                    </div> <!-- col-md-4 div -->
+                </div> <!-- row div -->
+            </div> <!-- container div -->
+        </div> <!-- main-gui div-->
+    </body>
+</html>
